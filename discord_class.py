@@ -1,7 +1,8 @@
-# Author			: G.M. Yongco #BeSomeoneWhoCanStandByShinomiya
-# Date				: ur my date uwu
-# Description		: A template class to abstact away discord stuff
-# HEADERS ================================================================
+# Author				: G.M. Yongco #BeSomeoneWhoCanStandByShinomiya
+# Date					: ur my date uwu
+# Description			: Code that will impress u ;)
+# Actual Description	: A template class to abstact away discord stuff
+# ========================================================================
 
 # discord
 import discord

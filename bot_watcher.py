@@ -1,7 +1,8 @@
-# Description     : Code that will impress u ;)
-# Author          : G.M. Yongco #BeSomeoneWhoCanStandByShinomiya
-# Date            : ur my date uwu
-# HEADERS ================================================================
+# Author				: G.M. Yongco #BeSomeoneWhoCanStandByShinomiya
+# Date					: ur my date uwu
+# Description			: Code that will impress u ;)
+# Actual Description	: watching for changes in web scraping or api and pinging users that want it
+# ========================================================================
 
 from discord_class import *
 
