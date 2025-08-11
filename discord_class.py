@@ -32,34 +32,8 @@ class DiscordBot():
 		self.functions_initialization:List[Callable] = []
 		self.functions_on_ready:List[Callable] = []
 
-		self.LOG_CHANNEL:discord.TextChannel
 		self.bot:discord.ext.commands.bot.Bot
-
-	# ====================================================================
-	# STANDARD CLASS FUNCTIONS
-	# ====================================================================
-
-	def __dict__(self)->dict:
-		ret_val:dict = {
-			"BOT_NAME" : str(self.bot.user), 
-			"LOG_CHANNEL_ID" : str(self.bot.get_channel(int(self.LOG_CHANNEL_ID))),
-			"functions_initialization" : [],
-			"functions_on_ready":[]
-		}
-
-		functions_initialization:List[str] = ret_val["functions_initialization"]
-		for functions in self.functions_initialization:
-			functions_initialization.append(functions.__name__)
-		functions_on_ready:List[str] = ret_val["functions_on_ready"]
-		for functions in self.functions_on_ready:
-			functions_on_ready.append(functions.__name__)
-					
-		print(f"function : __dict__ success")
-		return ret_val
-	
-	def __str__(self)->str:
-		print(f"function : __str__ success")
-		return str(json.dumps(obj = self.__dict__(), indent = 4))
+		self.LOG_CHANNEL:discord.TextChannel
 
 	# ====================================================================
 	# CORE CLASS FUNCTIONS
@@ -70,7 +44,6 @@ class DiscordBot():
 		self.TOKEN:str = os.getenv("TOKEN")
 		self.LOG_CHANNEL_ID:str = os.getenv("ID_CHANNEL_LOG")
 	
-
 	# ====================================================================
 	# DISCORD FUNCTIONS
 	# ====================================================================
