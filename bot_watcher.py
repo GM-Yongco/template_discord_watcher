@@ -4,35 +4,49 @@
 # Actual Description	: watching for changes in web scraping or api and pinging users that want it
 # ========================================================================
 
-from discord_class import *
-
-import json
-import requests
+import inspect
 import asyncio
 import datetime
-
 from dotenv import load_dotenv
+
+from discord_class import *
+
+from detector_hermes import DetectorHermes
 
 # ========================================================================
 # NEW CLASS
 # ========================================================================
 
 class WatcherBot(DiscordBot):
+		
+	async def notify(
+			self, 
+			message:str = "" 
+		) -> None:	
+		if message == "" or message == None:
+			return None
+		try:
+			await self.USER_01.send(f"```{message}```")
+			# await self.USER_02.send(f"```{message}```")
+		except Exception as e:
+			await self.LOG_CHANNEL.send(f"```{e}```")
 
-	def detector(self, link:str)->bool:
-		response = requests.get(link)
-		data_str:str = response.content.decode("utf-8")
-		data_json:json = json.loads(data_str)
+	async def execute_list(self, function_list:List[Callable]):
+		for function in function_list:
+			try:
+				print(f"executing_function - {'START':8} : {function.__name__}")
+				if inspect.iscoroutinefunction(function):
+					await function()
+				else:
+					function()
+				print(f"executing_function - {'SUCCESS':8} : {function.__name__}")
+			except Exception as e:
+				print(f"executing_function - {'ERROR':8} : {function.__name__}\n\t{e}")
 
-		ret_val = False
-		if int(data_json['current']) >= 80:
-			ret_val = True
-
-		return ret_val
 
 	# ====================================================================
 
-	async def bot_task_cycle(self, bot:discord.ext.commands.bot.Bot):
+	async def bot_task_cycle(self):
 		interval_seconds:int = 12
 
 		# time updates
@@ -42,13 +56,6 @@ class WatcherBot(DiscordBot):
 		previous_day:int = -1
 		previous_hour:int = -1
 		previous_minute:int = -1
-
-		load_dotenv()
-		LINK:str = str(os.getenv("LINK"))
-		USER_01:discord.User = bot.get_user(int(os.getenv("ID_USER_01")))
-		USER_02:discord.User = bot.get_user(int(os.getenv("ID_USER_02")))
-
-		message_count:int = 0
 
 		while(True):
 			await asyncio.sleep(interval_seconds)
@@ -63,53 +70,61 @@ class WatcherBot(DiscordBot):
 				previous_month = time_now.month
 			if time_now.isocalendar()[1] != previous_week:
 				previous_week = time_now.isocalendar()[1]
+				await self.execute_list(self.functions_on_week)
 			if time_now.day != previous_day:
 				previous_day = time_now.day
+				await self.execute_list(self.functions_on_day)
 			if time_now.hour != previous_hour:
 				previous_hour = time_now.hour
+				await self.execute_list(self.functions_on_hour)
 			if time_now.minute != previous_minute:
 				previous_minute = time_now.minute
-
-			# ============================================================
-			# every cycle type shi
-
-			message:str = ""
-			message_cmd:str = ""
-			if self.detector(LINK) and (message_count < 10):
-				message += "TIME TO GO MOTHER FUCKER"
-				message += f"\nENROLLMENT TIME"
-				try:
-					await USER_01.send(f"```{message}```")
-					await USER_02.send(f"```{message}```")
-					message_count += 1
-				except Exception as e:
-					await self.LOG_CHANNEL.send(f"```{e}```")
-				message_cmd = "ITS TIME"
-			else:
-				response = requests.get(LINK)
-				data_str:str = response.content.decode("utf-8")
-				data_json:json = json.loads(data_str)
-
-				message += "its not yet time, we must be patient"
-				message += "\n"
-				message += json.dumps(data_json, indent=4)
-				await self.LOG_CHANNEL.send(f"```{message}```")
-				message_cmd = "its not time"
-			print(message_cmd)
+				await self.execute_list(self.functions_on_minute)			
+			await self.execute_list(self.functions_on_cycle)
 
 	# ====================================================================
 
 	async def async_wrapper(self)->None:
 		bot_log:asyncio.Task = asyncio.create_task(
-			self.bot_task_cycle(self.bot)
+			self.bot_task_cycle()
 		)
 		await asyncio.gather(bot_log)
 	
+	# ====================================================================
+
+
+	async def initialize_watcher(self) -> None:
+		print(f"initializing_watcher - {'START':8}")
+					
+
+		# initialized notif
+		load_dotenv()
+		self.USER_01:discord.User = self.bot.get_user(int(os.getenv("ID_USER_01")))
+		self.USER_02:discord.User = self.bot.get_user(int(os.getenv("ID_USER_02")))
+
+		self.functions_on_week:List[Callable] = []
+		self.functions_on_day:List[Callable] = []
+		self.functions_on_hour:List[Callable] = []
+		self.functions_on_minute:List[Callable] = []
+		self.functions_on_cycle:List[Callable] = []
+
+		# async def notif_test():
+		# 	await self.notify("test-kill yourself")
+		# self.functions_on_cycle.append(notif_test)
+
+		async def detector_hermes_function():
+			detector_hermes_class:DetectorHermes = DetectorHermes()
+			await self.notify(detector_hermes_class.hermes_detector())
+		self.functions_on_cycle.append(detector_hermes_function)
+
+		await self.async_wrapper()
+
+
 # ========================================================================
 # TEST
 # ========================================================================
 
 if __name__ == '__main__':
 	bot:WatcherBot = WatcherBot()
-	bot.functions_on_ready.append(bot.async_wrapper)
+	bot.functions_on_ready.append(bot.initialize_watcher)
 	bot.run()
