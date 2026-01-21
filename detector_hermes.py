@@ -18,13 +18,20 @@ class DetectorHermes():
 	success_count:int = 0
 
 	def hermes_detector(self)->str:
-		response = requests.get(self.LINK_HERMES)
-		data_str:str = response.content.decode("utf-8")
-		data_json:json = json.loads(data_str)
-		current:int = int(data_json['current'])
-
 		ret_val:str = ""
-		if current >= self.LIMIT:
-			ret_val = "ENROLLMENT TIME"
+
+		try:
+			response = requests.get(
+				self.LINK_HERMES,
+				timeout=5
+			)
+			data_str:str = response.content.decode("utf-8")
+			data_json:json = json.loads(data_str)
+			current:int = int(data_json['current'])
+
+			if current >= self.LIMIT:
+				ret_val = "ENROLLMENT TIME"
+		except Exception as e:
+			ret_val:str = f"error{e}"
 
 		return ret_val

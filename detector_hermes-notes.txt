@@ -1,0 +1,24 @@
+the site = either 
+    queue.dcism.org
+    hermes.dcism.org
+    home.dcism.org
+
+both = windows and linux
+
+when using data
+    linux (windows untested and unecessary) can access the site from browser
+    linux (windows untested and unecessary) can scrape with python
+    
+when using home network
+    only windows can access the site from browser
+
+irrelevant setting
+    tracert(Windows) and tracerout(Linux) cannot reach the site
+        all gets stopped at 10.2.0.143
+    repplit and proxies cannot reach the site
+    both cannot ping the site
+
+current guess:
+    not a DNS issue
+    firewall blocking all non-browser calls
+    firewall blocking all linux systems from isp
