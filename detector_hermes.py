@@ -14,7 +14,7 @@ import requests
 # ========================================================================
 class DetectorHermes():
 	LINK_HERMES:str = "https://hermes.dcism.org/queue/BSCS/number/current"
-	LIMIT:int = 30
+	LIMIT:int = 50
 	success_count:int = 0
 
 	def hermes_detector(self)->str:
