@@ -12,5 +12,5 @@ from bot_watcher import WatcherBot
 
 if __name__ == '__main__':
 	bot:WatcherBot = WatcherBot()
-	bot.functions_on_ready.append(bot.async_wrapper)
+	bot.functions_on_ready.append(bot.initialize_watcher)
 	bot.run()
