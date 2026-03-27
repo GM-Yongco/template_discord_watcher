@@ -1,6 +1,4 @@
 #!/bin/bash
-
-
 set -e  # stop on first error
 
 SESSION="discord_watcher"
