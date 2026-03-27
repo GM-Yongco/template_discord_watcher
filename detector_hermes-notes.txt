@@ -6,11 +6,14 @@ the site = either
 both = windows and linux
 
 when using data
-    linux (windows untested and unecessary) can access the site from browser
+    linux and android(windows untested and unecessary) can access the site from browser
     linux (windows untested and unecessary) can scrape with python
     
 when using home network
-    only windows can access the site from browser
+    only windows CAN access the site from browser
+    android CANT access the site from browser
+    linux CANT access the site from browser 
+        (tested with debian fresh install(no zero tier))
 
 irrelevant setting
     tracert(Windows) and tracerout(Linux) cannot reach the site
@@ -22,3 +25,7 @@ current guess:
     not a DNS issue
     firewall blocking all non-browser calls
     firewall blocking all linux systems from isp
+
+    might also be a zero tier issue
+        doesnt make sense that they block android phones using wifi
+        this theory is less likely with the linux fresh install test
